@@ -1,0 +1,21 @@
+{
+  "name": "neTpyceB/TMCms-module-feedback",
+  "type": "library",
+  "description": "Module Feedback (contacts) for TMCms",
+  "keywords": ["module", "feedback"],
+  "homepage": "http://devp.lv/",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Vadims Petrusevs",
+      "email": "info@devp.lv",
+      "homepage": "http://devp.lv/",
+      "role": "Developer"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "TMCms\\Modules\\Feedback\\": "src"
+    }
+  }
+}
