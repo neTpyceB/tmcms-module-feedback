@@ -2,13 +2,13 @@
 
 namespace TMCms\Modules\Feedback;
 
-use neTpyceB\TMCms\HTML\Cms\CmsForm;
-use neTpyceB\TMCms\HTML\Cms\CmsTable;
-use neTpyceB\TMCms\HTML\Cms\Column\ColumnAccept;
-use neTpyceB\TMCms\HTML\Cms\Column\ColumnData;
-use neTpyceB\TMCms\HTML\Cms\Column\ColumnDelete;
-use neTpyceB\TMCms\HTML\Cms\Element\CmsHtml;
-use neTpyceB\TMCms\Strings\Converter;
+use TMCms\HTML\Cms\CmsForm;
+use TMCms\HTML\Cms\CmsTable;
+use TMCms\HTML\Cms\Column\ColumnAccept;
+use TMCms\HTML\Cms\Column\ColumnData;
+use TMCms\HTML\Cms\Column\ColumnDelete;
+use TMCms\HTML\Cms\Element\CmsHtml;
+use TMCms\Strings\Converter;
 use TMCms\Modules\Feedback\Entity\Feedback;
 use TMCms\Modules\Feedback\Entity\FeedbackRepository;
 

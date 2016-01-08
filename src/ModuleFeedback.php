@@ -2,11 +2,11 @@
 
 namespace TMCms\Modules\Feedback;
 
-use neTpyceB\TMCms\Config\Settings;
-use neTpyceB\TMCms\Modules\IModule;
-use neTpyceB\TMCms\Network\Mailer;
-use neTpyceB\TMCms\Strings\Verify;
-use neTpyceB\TMCms\Traits\singletonInstanceTrait;
+use TMCms\Config\Settings;
+use TMCms\Modules\IModule;
+use TMCms\Network\Mailer;
+use TMCms\Strings\Verify;
+use TMCms\Traits\singletonInstanceTrait;
 use TMCms\Modules\Feedback\Entity\Feedback;
 
 defined('INC') or exit;

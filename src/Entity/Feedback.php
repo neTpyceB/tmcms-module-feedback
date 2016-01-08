@@ -2,7 +2,7 @@
 
 namespace TMCms\Modules\Feedback\Entity;
 
-use neTpyceB\TMCms\Orm\Entity;
+use TMCms\Orm\Entity;
 
 /**
  * Class Feedback
