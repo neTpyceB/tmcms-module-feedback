@@ -3,6 +3,7 @@
 namespace TMCms\Modules\Feedback;
 
 use TMCms\Config\Settings;
+use TMCms\Modules\Feedback\Entity\FeedbackRepository;
 use TMCms\Modules\IModule;
 use TMCms\Network\Mailer;
 use TMCms\Strings\Verify;
@@ -23,6 +24,9 @@ class ModuleFeedback implements IModule {
 		if ($need_to_send_email && $data['email'] && !Verify::email($data['email'])) {
 			return false;
 		}
+
+		// Autocreate db
+		$feedbacks = new FeedbackRepository();
 
 		// Save to Db
 		if ($need_to_save_in_db) {
