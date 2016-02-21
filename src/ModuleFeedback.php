@@ -2,6 +2,7 @@
 
 namespace TMCms\Modules\Feedback;
 
+use TMCms\Cache\Cacher;
 use TMCms\Config\Settings;
 use TMCms\Modules\Feedback\Entity\FeedbackRepository;
 use TMCms\Modules\IModule;
@@ -15,11 +16,22 @@ defined('INC') or exit;
 class ModuleFeedback implements IModule {
 	use singletonInstanceTrait;
 
+	private static $sending_period_seconds = 5;
+
 	public static $tables = [
 		'feedback' => 'm_feedback'
 	];
 
 	public static function addNewFeedback(array $data, $need_to_save_in_db = true, $need_to_send_email = false) {
+		$cacher = Cacher::getInstance()->getDefaultCacher();
+		$cache_key = 'module_feedback_add_new_feedback_last_send_ts' . VISITOR_HASH;
+
+		// Check message is not sent too quick
+		$last_sent_ts = $cacher->get($cache_key);
+		if (NOW - $last_sent_ts < self::$sending_period_seconds) {
+			return false;
+		}
+
 		// Check email
 		if ($need_to_send_email && $data['email'] && !Verify::email($data['email'])) {
 			return false;
@@ -55,6 +67,10 @@ class ModuleFeedback implements IModule {
 			;
 
 		}
+
+		// Save last send ts
+		$cacher->set($cache_key, NOW);
+
 		return true;
 	}
 }
