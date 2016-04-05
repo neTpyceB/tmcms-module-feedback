@@ -22,18 +22,16 @@ class ModuleFeedback implements IModule {
 		'feedback' => 'm_feedback'
 	];
 
-	public static function addNewFeedback(array $data, $need_to_save_in_db = true, $need_to_send_email = false) {
+
+	public static function addNewFeedback(array $data, $need_to_save_in_db = true, $send_to_emails = []) {
+		$send_to_emails = (array)$send_to_emails;
+
 		$cacher = Cacher::getInstance()->getDefaultCacher();
 		$cache_key = 'module_feedback_add_new_feedback_last_send_ts' . VISITOR_HASH;
 
 		// Check message is not sent too quick
 		$last_sent_ts = $cacher->get($cache_key);
 		if (NOW - $last_sent_ts < self::$sending_period_seconds) {
-			return false;
-		}
-
-		// Check email
-		if ($need_to_send_email && $data['email'] && !Verify::email($data['email'])) {
 			return false;
 		}
 
@@ -48,7 +46,7 @@ class ModuleFeedback implements IModule {
 		}
 
 		// Send email to manager
-		if ($need_to_send_email) {
+		if ($send_to_emails) {
 
 			$msg = '<table><tr><th>Field</th><th>Value</th></tr>';
 			foreach ($data as $k => $v) {
@@ -58,13 +56,21 @@ class ModuleFeedback implements IModule {
 			}
 			$msg .= '</table>';
 
-			Mailer::getInstance()
+			$mailer = Mailer::getInstance()
 				->setSubject('New feedback from '. CFG_DOMAIN)
 				->setSender(Settings::getCommonEmail())
-				->setRecipient(Settings::getCommonEmail())
 				->setMessage($msg)
-				->send()
 			;
+
+			foreach ($send_to_emails as $email) {
+				if (!Verify::email($data['email'])) {
+					continue;
+				}
+
+				$mailer->setRecipient($email);
+			}
+
+			$mailer->send();
 
 		}
 
