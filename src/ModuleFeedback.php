@@ -38,6 +38,7 @@ class ModuleFeedback implements IModule {
 		// Autocreate db
 		$feedbacks = new FeedbackRepository();
 
+		$feedback = NULL;
 		// Save to Db
 		if ($need_to_save_in_db) {
 			$feedback = new Feedback();
@@ -77,6 +78,6 @@ class ModuleFeedback implements IModule {
 		// Save last send ts
 		$cacher->set($cache_key, NOW);
 
-		return true;
+		return $feedback;
 	}
 }
