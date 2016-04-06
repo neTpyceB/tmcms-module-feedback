@@ -64,10 +64,6 @@ class ModuleFeedback implements IModule {
 			;
 
 			foreach ($send_to_emails as $email) {
-				if (!Verify::email($data['email'])) {
-					continue;
-				}
-
 				$mailer->setRecipient($email);
 			}
 
