@@ -12,8 +12,7 @@ class FeedbackRepository extends EntityRepository {
                 'type' => 'index',
             ],
             'date_created' => [
-                'type' => 'int',
-                'unsigned' => true,
+                'type' => 'ts',
             ],
             'done' => [
                 'type' => 'bool',

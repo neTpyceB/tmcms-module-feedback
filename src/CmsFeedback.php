@@ -26,7 +26,8 @@ class CmsFeedback
         $feedback_collection->addOrderByField('date_created', true);
 
         echo Columns::getInstance()
-            ->add('<a href="?p='. P .'&do=_remove_dupes" class="btn btn-warning">Remove duplicate emails</a>', ['align' => 'right'])
+            ->add('<a href="?p='. P .'&do=_remove_unconfirmed" class="btn btn-danger">Remove unconfirmed</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;<a href="?p='. P .'&do=_remove_dupes" class="btn btn-warning">Remove duplicate emails</a>', ['align' => 'right'])
         ;
 
         echo CmsTable::getInstance()
@@ -133,6 +134,15 @@ class CmsFeedback
 
             $feedback->deleteObject();
         }
+
+        back();
+    }
+
+    public function _remove_unconfirmed() {
+        $all = new FeedbackRepository();
+        $all->setWhereDone(0);
+        $all->addWhereFieldIsLower('date_created', NOW - 86400); // One day ago
+        $all->deleteObjectCollection();
 
         back();
     }
