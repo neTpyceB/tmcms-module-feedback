@@ -23,7 +23,7 @@ class ModuleFeedback implements IModule {
 	];
 
 
-	public static function addNewFeedback(array $data, $need_to_save_in_db = true, $send_to_emails = []) {
+	public static function addNewFeedback(array $data, $need_to_save_in_db = true, $send_to_emails = [], $files = null) {
 		$send_to_emails = (array)$send_to_emails;
 
 		$cacher = Cacher::getInstance()->getDefaultCacher();
@@ -65,6 +65,12 @@ class ModuleFeedback implements IModule {
 
 			foreach ($send_to_emails as $email) {
 				$mailer->setRecipient($email);
+			}
+
+			if ($files) {
+				foreach ($files as $file) {
+					$mailer->addAttachment($file);
+				}
 			}
 
 			$mailer->send();
