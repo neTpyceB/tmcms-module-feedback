@@ -1,15 +1,15 @@
 {
-  "name": "neTpyceB/TMCms-module-feedback",
+  "name": "devp.eu/tmcms-module-feedback",
   "type": "library",
   "description": "Module Feedback (contacts) for TMCms",
-  "keywords": ["module", "feedback"],
-  "homepage": "http://devp.lv/",
+  "keywords": ["module", "feedback", "TMcms"],
+  "homepage": "http://devp.eu/",
   "license": "proprietary",
   "authors": [
     {
       "name": "Vadims Petrusevs",
-      "email": "info@devp.lv",
-      "homepage": "http://devp.lv/",
+      "email": "info@devp.eu",
+      "homepage": "http://devp.eu/",
       "role": "Developer"
     }
   ],
