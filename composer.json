@@ -1,5 +1,5 @@
 {
-  "name": "devp.eu/tmcms-module-feedback",
+  "name": "devp-eu/tmcms-module-feedback",
   "type": "library",
   "description": "Module Feedback (contacts) for TMCms",
   "keywords": ["module", "feedback", "TMcms"],
