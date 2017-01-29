@@ -2,12 +2,12 @@
 
 namespace TMCms\Modules\Feedback;
 
+use TMCms\HTML\BreadCrumbs;
 use TMCms\HTML\Cms\CmsForm;
 use TMCms\HTML\Cms\CmsTable;
 use TMCms\HTML\Cms\Column\ColumnAccept;
 use TMCms\HTML\Cms\Column\ColumnData;
 use TMCms\HTML\Cms\Column\ColumnDelete;
-use TMCms\HTML\Cms\Columns;
 use TMCms\HTML\Cms\Element\CmsHtml;
 use TMCms\HTML\Cms\Filter\Text;
 use TMCms\HTML\Cms\FilterForm;
@@ -17,6 +17,10 @@ use TMCms\Modules\Feedback\Entity\FeedbackRepository;
 
 defined('INC') or exit;
 
+BreadCrumbs::getInstance()
+    ->addCrumb(P)
+;
+
 class CmsFeedback
 {
     /** Main view */
@@ -25,9 +29,9 @@ class CmsFeedback
         $feedback_collection = new FeedbackRepository();
         $feedback_collection->addOrderByField('date_created', true);
 
-        echo Columns::getInstance()
-            ->add('<a href="?p='. P .'&do=_remove_unconfirmed" class="btn btn-danger">Remove unconfirmed</a>
-            &nbsp;&nbsp;&nbsp;&nbsp;<a href="?p='. P .'&do=_remove_dupes" class="btn btn-warning">Remove duplicate emails</a>', ['align' => 'right'])
+        BreadCrumbs::getInstance()
+            ->addAction('Remove unconfirmed', '?p='. P .'&do=_remove_unconfirmed')
+            ->addAction('Remove duplicate emails', '?p='. P .'&do=_remove_dupes')
         ;
 
         echo CmsTable::getInstance()
@@ -59,7 +63,6 @@ class CmsFeedback
             )
             ->attachFilterForm(
                 FilterForm::getInstance()
-                    ->setWidth('100%')
                     ->addFilter('Email', Text::getInstance('email')
                         ->actAs('like')
                     )
@@ -92,7 +95,9 @@ class CmsFeedback
                 continue;
             }
 
-            $form->addField(Converter::symb2Ttl($k), CmsHtml::getInstance($k)->value(htmlspecialchars($item, ENT_QUOTES)));
+            $form->addField(Converter::symb2Ttl($k), CmsHtml::getInstance($k)
+                ->setValue(htmlspecialchars($item, ENT_QUOTES))
+            );
         }
 
         echo $form;

@@ -4,6 +4,12 @@ namespace TMCms\Modules\Feedback\Entity;
 
 use TMCms\Orm\EntityRepository;
 
+/**
+ * Class FeedbackRepository
+ * @package TMCms\Modules\Feedback\Entity
+ *
+ * @method $this setWhereDone(int $flag)
+ */
 class FeedbackRepository extends EntityRepository {
     protected $db_table = 'm_feedback';
     protected $table_structure = [
