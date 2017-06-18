@@ -16,12 +16,10 @@ defined('INC') or exit;
 class ModuleFeedback implements IModule {
 	use singletonInstanceTrait;
 
-	private static $sending_period_seconds = 5;
-
 	public static $tables = [
 		'feedback' => 'm_feedback'
 	];
-
+    private static $sending_period_seconds = 5;
 
 	public static function addNewFeedback(array $data, $need_to_save_in_db = true, $send_to_emails = [], $files = []) {
 		$send_to_emails = (array)$send_to_emails;
@@ -51,7 +49,7 @@ class ModuleFeedback implements IModule {
 
 			$msg = '<table><tr><th>Field</th><th>Value</th></tr>';
 			foreach ($data as $k => $v) {
-				if ($v) {
+                if ($v && is_scalar($v)) {
 					$msg .= '<tr><td>'. $k .'</td><td>'. htmlspecialchars($v) .'</td></tr>';
 				}
 			}
