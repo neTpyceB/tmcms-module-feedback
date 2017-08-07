@@ -95,7 +95,7 @@ class CmsFeedback
                 continue;
             }
 
-            $form->addField(Converter::symb2Ttl($k), CmsHtml::getInstance($k)
+            $form->addField(Converter::charsToNormalTitle($k), CmsHtml::getInstance($k)
                 ->setValue(htmlspecialchars($item, ENT_QUOTES))
             );
         }
