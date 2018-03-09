@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TMCms\Modules\Feedback;
 
@@ -11,19 +12,27 @@ use TMCms\HTML\Cms\Column\ColumnDelete;
 use TMCms\HTML\Cms\Element\CmsHtml;
 use TMCms\HTML\Cms\Filter\Text;
 use TMCms\HTML\Cms\FilterForm;
-use TMCms\Strings\Converter;
 use TMCms\Modules\Feedback\Entity\Feedback;
 use TMCms\Modules\Feedback\Entity\FeedbackRepository;
+use TMCms\Strings\Converter;
 
-defined('INC') or exit;
+\defined('INC') or exit;
 
 BreadCrumbs::getInstance()
     ->addCrumb(P)
 ;
 
+/**
+ * Class CmsFeedback
+ * @package TMCms\Modules\Feedback
+ */
 class CmsFeedback
 {
-    /** Main view */
+    /**
+     * Main view
+     * @throws \LogicException
+     * @throws \InvalidArgumentException
+     */
     public function _default()
     {
         $feedback_collection = new FeedbackRepository();
@@ -73,25 +82,28 @@ class CmsFeedback
     /** View one */
     public function view()
     {
-        if (!isset($_GET['id']) || !ctype_digit((string)$_GET['id'])) return;
+        if (!isset($_GET['id']) || !ctype_digit((string)$_GET['id'])) {
+            return;
+        }
         $feedback_id = $_GET['id'];
 
         $feedback = new Feedback($feedback_id);
-        if (!$feedback) return;
+        if (!$feedback) {
+            return;
+        }
 
         $feedback_data = $feedback->getAsArray();
 
         $form = CmsForm::getInstance()
-            ->outputTagForm(false)
+            ->disableFormTagOutput()
         ;
 
-        $feedback_data['date_created'] = date(CFG_CMS_DATETIME_FORMAT, $feedback_data['date_created']);
+        $feedback_data['date_created'] = date(CFG_CMS_DATETIME_FORMAT, (int)$feedback_data['date_created']);
 
-        unset($feedback_data['id']);
-        unset($feedback_data['client_id']);
+        unset($feedback_data['id'], $feedback_data['client_id']);
 
         foreach ($feedback_data as $k => $item) {
-            if (!is_string($item)) {
+            if (!\is_string($item)) {
                 continue;
             }
 
@@ -105,7 +117,9 @@ class CmsFeedback
 
     public function _done()
     {
-        if (!isset($_GET['id']) || !ctype_digit((string)$_GET['id'])) return;
+        if (!isset($_GET['id']) || !ctype_digit((string)$_GET['id'])) {
+            return;
+        }
         $feedback_id = $_GET['id'];
 
         $feedback = new Feedback($feedback_id);
@@ -118,7 +132,9 @@ class CmsFeedback
     public function _delete()
     {
 
-        if (!isset($_GET['id']) || !ctype_digit((string)$_GET['id'])) return;
+        if (!isset($_GET['id']) || !ctype_digit((string)$_GET['id'])) {
+            return;
+        }
         $feedback_id = $_GET['id'];
 
         $feedback = new Feedback($feedback_id);
@@ -132,7 +148,7 @@ class CmsFeedback
 
         $used_email = [];
         foreach ($all->getAsArrayOfObjects() as $feedback) { /** @var $feedback Feedback */
-            if (!in_array($feedback->getEmail(), $used_email)) {
+            if (!in_array($feedback->getEmail(), $used_email, true)) {
                 $used_email[] = $feedback->getEmail();
                 continue;
             }
