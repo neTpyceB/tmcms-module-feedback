@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace TMCms\Modules\Feedback;
 
+use TMCms\Files\FileSystem;
 use TMCms\HTML\BreadCrumbs;
 use TMCms\HTML\Cms\CmsForm;
 use TMCms\HTML\Cms\CmsTable;
@@ -12,8 +13,8 @@ use TMCms\HTML\Cms\Column\ColumnDelete;
 use TMCms\HTML\Cms\Element\CmsHtml;
 use TMCms\HTML\Cms\Filter\Text;
 use TMCms\HTML\Cms\FilterForm;
-use TMCms\Modules\Feedback\Entity\Feedback;
-use TMCms\Modules\Feedback\Entity\FeedbackRepository;
+use TMCms\Modules\Feedback\Entity\FeedbackEntity;
+use TMCms\Modules\Feedback\Entity\FeedbackEntityRepository;
 use TMCms\Strings\Converter;
 
 \defined('INC') or exit;
@@ -35,7 +36,7 @@ class CmsFeedback
      */
     public function _default()
     {
-        $feedback_collection = new FeedbackRepository();
+        $feedback_collection = new FeedbackEntityRepository();
         $feedback_collection->addOrderByField('date_created', true);
 
         BreadCrumbs::getInstance()
@@ -79,7 +80,9 @@ class CmsFeedback
     }
 
 
-    /** View one */
+    /**
+     * View one
+     */
     public function view()
     {
         if (!isset($_GET['id']) || !ctype_digit((string)$_GET['id'])) {
@@ -87,7 +90,7 @@ class CmsFeedback
         }
         $feedback_id = $_GET['id'];
 
-        $feedback = new Feedback($feedback_id);
+        $feedback = new FeedbackEntity($feedback_id);
         if (!$feedback) {
             return;
         }
@@ -112,6 +115,14 @@ class CmsFeedback
             );
         }
 
+        // Possible files uploaded
+        $i = 0;
+        foreach (FileSystem::scanDirs($feedback->getUploadFolder(true)) as $item) {
+            $i++;
+            $form->addField('File '. $i, CmsHtml::getInstance($k)
+                ->setValue('<a href="'. $item['path_url'] .'">'. $item['name'] .'</a>')
+            );
+        }
         echo $form;
     }
 
@@ -122,7 +133,7 @@ class CmsFeedback
         }
         $feedback_id = $_GET['id'];
 
-        $feedback = new Feedback($feedback_id);
+        $feedback = new FeedbackEntity($feedback_id);
         $feedback->flipBoolValue('done');
         $feedback->save();
 
@@ -137,18 +148,18 @@ class CmsFeedback
         }
         $feedback_id = $_GET['id'];
 
-        $feedback = new Feedback($feedback_id);
+        $feedback = new FeedbackEntity($feedback_id);
         $feedback->deleteObject();
 
         back();
     }
 
     public function _remove_dupes() {
-        $all = new FeedbackRepository();
+        $all = new FeedbackEntityRepository();
 
         $used_email = [];
-        foreach ($all->getAsArrayOfObjects() as $feedback) { /** @var $feedback Feedback */
-            if (!in_array($feedback->getEmail(), $used_email, true)) {
+        foreach ($all->getAsArrayOfObjects() as $feedback) { /** @var $feedback FeedbackEntity */
+            if (!\in_array($feedback->getEmail(), $used_email, true)) {
                 $used_email[] = $feedback->getEmail();
                 continue;
             }
@@ -160,7 +171,7 @@ class CmsFeedback
     }
 
     public function _remove_unconfirmed() {
-        $all = new FeedbackRepository();
+        $all = new FeedbackEntityRepository();
         $all->setWhereDone(0);
         $all->addWhereFieldIsLower('date_created', NOW - 86400); // One day ago
         $all->deleteObjectCollection();

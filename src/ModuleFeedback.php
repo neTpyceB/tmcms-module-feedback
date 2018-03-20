@@ -5,7 +5,8 @@ namespace TMCms\Modules\Feedback;
 
 use TMCms\Cache\Cacher;
 use TMCms\Config\Settings;
-use TMCms\Modules\Feedback\Entity\Feedback;
+use TMCms\Files\FileSystem;
+use TMCms\Modules\Feedback\Entity\FeedbackEntity;
 use TMCms\Modules\IModule;
 use TMCms\Network\Mailer;
 use TMCms\Traits\singletonInstanceTrait;
@@ -29,10 +30,10 @@ class ModuleFeedback implements IModule {
      * @param bool $need_to_save_in_db
      * @param array $send_to_emails
      * @param array $files
-     * @return Feedback
+     * @return FeedbackEntity
      */
-    public static function addNewFeedback(array $data, $need_to_save_in_db = true, array $send_to_emails = [], array $files = []): Feedback {
-        $feedback = new Feedback();
+    public static function addNewFeedback(array $data, $need_to_save_in_db = true, array $send_to_emails = [], array $files = []): FeedbackEntity {
+        $feedback = new FeedbackEntity();
 
         $cacher = Cacher::getInstance()->getDefaultCacher();
         $cache_key = 'module_feedback_add_new_feedback_last_send_ts' . VISITOR_HASH;
@@ -46,6 +47,18 @@ class ModuleFeedback implements IModule {
         if ($need_to_save_in_db) {
             $feedback->loadDataFromArray($data);
             $feedback->save();
+        }
+
+        // Save files if have any
+        $folder_for_feedback = $feedback->getUploadFolder(true);
+        FileSystem::mkDir($folder_for_feedback);
+        $i = 1;
+        foreach ($files as $file_path => $file_name) {
+            // Upload to Feedback directory
+            $ext = pathinfo($file_name, PATHINFO_EXTENSION);
+            \copy($file_path, $folder_for_feedback . $i . '.' . $ext);
+
+            $i++;
         }
 
         // Send email to manager
@@ -69,8 +82,8 @@ class ModuleFeedback implements IModule {
                 $mailer->setRecipient($email);
             }
 
-            foreach ($files as $file) {
-                $mailer->addAttachment($file);
+            foreach ($files as $file_path => $file_name) {
+                $mailer->addAttachment($file_path);
             }
 
             $mailer->send();

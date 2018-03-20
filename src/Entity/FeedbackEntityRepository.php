@@ -10,7 +10,7 @@ use TMCms\Orm\EntityRepository;
  *
  * @method $this setWhereDone(int $flag)
  */
-class FeedbackRepository extends EntityRepository {
+class FeedbackEntityRepository extends EntityRepository {
     protected $db_table = 'm_feedback';
     protected $table_structure = [
         'fields' => [

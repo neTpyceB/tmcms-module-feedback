@@ -2,6 +2,7 @@
 
 namespace TMCms\Modules\Feedback\Entity;
 
+use TMCms\Files\FileSystem;
 use TMCms\Orm\Entity;
 
 /**
@@ -15,7 +16,7 @@ use TMCms\Orm\Entity;
  * @method string getEmail()
  * @method string getName()
  */
-class Feedback extends Entity {
+class FeedbackEntity extends Entity {
     protected $db_table = 'm_feedback';
 
     public function beforeCreate() {
@@ -23,5 +24,22 @@ class Feedback extends Entity {
         $this->setField('ip', IP);
 
         parent::beforeCreate();
+    }
+
+    protected function beforeDelete()
+    {
+        FileSystem::remdir($this->getUploadFolder(true));
+
+        parent::beforeDelete();
+    }
+
+    /**
+     * @param bool $absolute
+     *
+     * @return string
+     */
+    public function getUploadFolder($absolute = false): string
+    {
+        return ($absolute ? \DIR_BASE : '') . \DIR_PUBLIC_URL . 'feedbacks/' . $this->getId() . '/';
     }
 }
