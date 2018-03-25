@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace TMCms\Modules\Feedback;
 
+use TMCms\Config\Constants;
 use TMCms\Files\FileSystem;
 use TMCms\HTML\BreadCrumbs;
 use TMCms\HTML\Cms\CmsForm;
@@ -101,7 +102,7 @@ class CmsFeedback
             ->disableFormTagOutput()
         ;
 
-        $feedback_data['date_created'] = date(CFG_CMS_DATETIME_FORMAT, (int)$feedback_data['date_created']);
+        $feedback_data['date_created'] = date(Constants::FORMAT_CMS_DATETIME_FORMAT, (int)$feedback_data['date_created']);
 
         unset($feedback_data['id'], $feedback_data['client_id']);
 
