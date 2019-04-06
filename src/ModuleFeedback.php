@@ -64,10 +64,10 @@ class ModuleFeedback implements IModule {
         // Send email to manager
         if ($send_to_emails) {
 
-            $msg = '<table><tr><th>Field</th><th>Value</th></tr>';
+            $msg = '';
             foreach ($data as $k => $v) {
                 if ($v && is_scalar($v)) {
-                    $msg .= '<tr><td>'. $k .'</td><td>'. htmlspecialchars($v) .'</td></tr>';
+                    $msg .= $k . ' - '. htmlspecialchars($v) .'<br>' . "\n";
                 }
             }
             $msg .= '</table>';
