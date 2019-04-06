@@ -67,7 +67,7 @@ class ModuleFeedback implements IModule {
             $msg = '';
             foreach ($data as $k => $v) {
                 if ($v && is_scalar($v)) {
-                    $msg .= $k . ' - '. htmlspecialchars($v) .'<br>' . "\n";
+                    $msg .= \ucfirst($k) . ': '. htmlspecialchars($v) .'<br>' . "\n";
                 }
             }
             $msg .= '</table>';
